@@ -1,0 +1,28 @@
+{
+  "name": "simple-api",
+  "version": "1.0.0",
+  "description": "Simple Node.js REST API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emondek/simple-api.git"
+  },
+  "keywords": [
+    "Node",
+    "REST"
+  ],
+  "author": "Ed Mondek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emondek/simple-api/issues"
+  },
+  "homepage": "https://github.com/emondek/simple-api#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "ip": "^1.1.5"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "deployable_nodes":[
+  {
+    "name":"nginx",
+    "volumes":["./nginx.conf:/etc/nginx/nginx.conf:ro"],
+    "deployment_node":{
+      "name":"nginx:latest"
+    }
+  },
+  {
+    "name":"webserver",
+    "hostname":"webserver01",
+    "volumes":["./conf:/conf"],
+    "deployment_node":{
+      "name":"httpd:latest",
+      "replicas":3
+    }
+  },
+  {
+    "name":"db",
+    "volumes":["db:/var/lib/postgresql/data","./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql" ],
+    "deployment_node":{
+      "name":"postgres:14.1-alpine"
+    }
+  },
+  {
+    "name":"cache",
+    "volumes":["cache:/data"],
+    "deployment_node":{
+      "name":"redis:6.2-alpine"
+    }
+  },
+  {
+    "name":"postservice",
+    "deployment_node":{
+      "name":"casestudy/postservice"
+    }
+  },
+  {
+    "name":"fanoutservice",
+    "deployment_node":{
+      "name":"casestudy/fanoutservice"
+    }
+  },
+  {
+    "name":"newsfeedservice",
+    "deployment_node":{
+      "name":"casestudy/newsfeedservice"
+    }
+  },
+  {
+    "name":"redis",
+    "volumes":["./redis:/redis"],
+    "deployment_node":{
+      "name":"redis:6.2-alpine"
+    }
+  },
+  {
+    "name":"worker",
+    "deployment_node":{
+      "name":"worker-image:latest"
+    }
+  }
+],
+
+"dependencies_list":[
+  {
+    "out":"nginx",
+    "in":"webserver"
+  },
+  {
+    "out":"postservice",
+    "in":"db"
+  },
+  {
+    "out":"postservice",
+    "in":"cache"
+  },
+  {
+    "out":"fanoutservice",
+    "in":"db"
+  },
+  {
+    "out":"fanoutservice",
+    "in":"cache"
+  },
+  {
+    "out":"fanoutservice",
+    "in":"redis"
+  },
+  {
+    "out":"newsfeedservice",
+    "in":"db"
+  },
+  {
+    "out":"newsfeedservice",
+    "in":"cache"
+  },
+  {
+    "out":"worker",
+    "in":"redis"
+  }
+]
+
+}
+  

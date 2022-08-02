@@ -1,0 +1,72 @@
+components:
+  nginx:
+    name: nginx
+    properties:
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    artifacts:
+      name: nginx:latest
+  webserver:
+    name: webserver
+    type: webserver
+    properties:
+      volumes:
+        - ./conf:/conf
+    artifacts:
+      name: httpd:latest
+  db:
+    name: db
+    type: database
+    properties:
+      volumes:
+        - db:/var/lib/postgresql/data","./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    artifacts:
+      name: postgres:14.1-alpine
+  cache:
+    name: cache
+    type: datacache
+    properties:
+      volumes:
+        - cache:/data
+    artifacts:
+      name: redis:6.2-alpine
+  postservice:
+    name: postservice
+    type: service
+    artifacts:
+      name: casestudy/postservice
+  fanoutservice:
+    name: fanoutservice
+    type: service
+    artifacts:
+      name: casestudy/fanoutservice 
+  redis:
+    name: redis
+    type: messagequeue
+    properties:
+      volumes:
+        - ./redis:/redis
+    artifacts:
+      name: redis:6.2-alpine
+  worker:
+    name: worker
+    type: service
+    artifacts:
+      name: worker-image:latest
+
+
+relations: 
+  - out: nginx
+    in: webserver
+  - out: postservice
+    in: db
+  - out: postservice,
+    in: cache
+  - out: fanoutservice
+    in: db
+  - out: fanoutservice,
+    in: cache
+  - out: fanoutservice,
+    in: redis
+  - out: worker,
+    in: redis
